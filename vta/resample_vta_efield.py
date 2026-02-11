@@ -113,3 +113,44 @@ for Efield_path in EfieldsRaw_Paths:
     print(new_path)
     
 print("Resampling done.")
+
+
+
+
+file_dict = {}
+
+for file_name in os.listdir(os.path.join(Efields_Paths[res], "Lateral")):
+    if f"-R_{res}" in file_name or f"-L_{res}" in file_name:
+        parts = file_name.split("_", 2)
+        prefix = "_".join(parts[:1])
+        
+        if prefix in file_dict:
+            file_dict[prefix].append(os.path.join(Efields_Paths[res], "Lateral", file_name))
+        else:
+            file_dict[prefix] = [os.path.join(Efields_Paths[res], "Lateral", file_name)]
+
+print(f"{len(file_dict)} pairs found")
+
+for prefix in file_dict.keys():
+    if len(file_dict[prefix]) == 2:
+        img1 = nib.load(file_dict[prefix][0])
+        img2 = nib.load(file_dict[prefix][1])
+        
+        data1 = img1.get_fdata()
+        data2 = img2.get_fdata()
+        
+        if data1.shape != data2.shape:
+            raise ValueError("The dimensions of the two images do not match!")
+        
+        combined_data = data1 + data2
+        
+        combined = nib.Nifti1Image(combined_data, affine=img1.affine)
+        
+        output_path = os.path.join(Efields_Paths[res], f"{prefix}_{res}_{threshold_value}Vm.nii.gz")
+        
+        nib.save(combined, output_path)
+        os.remove(file_dict[prefix][0])
+        os.remove(file_dict[prefix][1])
+        print(output_path)
+        
+print("Merging done.")
