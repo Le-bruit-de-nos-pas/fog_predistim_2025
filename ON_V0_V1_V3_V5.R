@@ -28,6 +28,10 @@ UPDRSII_2.12 <- UPDRSII_ON_2.12 %>% select(SUBJID, V0_MDS2_12ON,  V1_MDS2_12ON) 
   full_join(UPDRSII_V3_V5 %>% select(SUBJID, V3_MDS2_12ON,V5_MDS2_12ON  )) %>%
   drop_na() %>% mutate(V3_MDS2_12ON=as.numeric(V3_MDS2_12ON),V5_MDS2_12ON=as.numeric(V5_MDS2_12ON) ) %>% drop_na()
 
+UPDRSII_OFF_2.12 <- fread("data/UPDRSII_OFF_2.12.txt")
+
+
+
 
 
 # Reshape data to long format
