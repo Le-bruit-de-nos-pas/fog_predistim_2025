@@ -90,3 +90,26 @@ for prefix in file_dict.keys():
         print(output_path)
         
 print("Merging done.")
+
+
+
+
+threshold_value = 200 # [V/m] Change if needed
+mask_image = nib.load(Mask_Paths[res])
+EfieldsRaw_Paths = glob.glob(os.path.join(EfieldsRaw_Path, '**', '*'), recursive=True)
+
+for Efield_path in EfieldsRaw_Paths:
+    img = nib.load(Efield_path)
+    img_data = img.get_fdata()
+    img_data_thresholded = np.where(img_data < threshold_value, 0, img_data)
+    img_data_thresholded = img_data_thresholded.astype(np.float32)
+    img_thresholded = nib.Nifti1Image(img_data_thresholded, img.affine)
+
+    resliced_img = resample_to_img(img_thresholded, mask_image, interpolation='nearest')
+    
+    new_path = Efields_Paths[res] + "/Lateral/" + os.path.basename(Efield_path).replace('.', f'_{res}_{threshold_value}Vm.', 1)
+    
+    nib.save(resliced_img, new_path)
+    print(new_path)
+    
+print("Resampling done.")
