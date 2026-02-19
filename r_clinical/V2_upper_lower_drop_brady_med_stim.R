@@ -383,6 +383,93 @@ ggsave(file="cor_upper_lower_brady_stim.svg", plot=plot, width=4, height=4)
 
 
 
+cor.test(Brady_scores_Down$Delta_Stim_Down, Brady_scores_Down$Delta_Med_Down, method = "spearman")
+
+# 	Spearman's rank correlation rho
+# 
+# data:  Brady_scores_Down$Delta_Stim_Down and Brady_scores_Down$Delta_Med_Down
+# S = 14486165, p-value = 1.339e-14
+# alternative hypothesis: true rho is not equal to 0
+# sample estimates:
+#       rho 
+# 0.3330666 
+
+plot <- Brady_scores_Down %>% 
+  ggplot(aes(x = Delta_Stim_Down , y = Delta_Med_Down )) +
+  geom_smooth(method="lm", colour= "#b5667b", fill="#b5667b" ) +
+  geom_jitter(alpha=0.25, size=0.5, width=2.2, height=2, shape=1, colour= "#b5667b", stroke=2) +
+  theme_minimal() + 
+  ylim(-120, 120) + xlim(-120, 120) +
+  labs(x = "\nLower-Body Brady Stim-ON % Delta",
+       y = "Lower-Body Brady Med-ON % Delta \n") +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_blank(),
+        axis.line = element_blank(),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12, vjust = -0.5),
+        axis.title.y = element_text(size = 12, vjust = -0.5),
+        plot.margin = margin(5, 5, 5, 5, "pt")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(text = element_text(face = "bold"))
+
+plot
+
+ggsave(file="cor_upper_lower_brady_stim.svg", plot=plot, width=4, height=4)
+
+
+
+
+
+
+cor.test(Brady_scores_Up$Delta_Med_Up, Brady_scores_Up$Delta_Stim_Up, method = "spearman")
+
+# 	Spearman's rank correlation rho
+# 
+# data:  Brady_scores_Up$Delta_Med_Up and Brady_scores_Up$Delta_Stim_Up
+# S = 13559068, p-value < 2.2e-16
+# alternative hypothesis: true rho is not equal to 0
+# sample estimates:
+#       rho 
+# 0.3757495  
+
+
+plot <- Brady_scores_Up %>% 
+  ggplot(aes(x = Delta_Med_Up , y = Delta_Stim_Up )) +
+  geom_smooth(method="lm", colour= "#193a71", fill="#193a71" ) +
+  geom_jitter(alpha=0.25, size=0.5, width=2.2, height=2, shape=1, colour= "#193a71", stroke=2) +
+  theme_minimal() + 
+ ylim(-120, 120) + xlim(-120, 120) +
+  labs(x = "\nUpper-Body Brady Med-ON % Delta",
+       y = "Upper-Body Brady Stim-ON % Delta \n") +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_blank(),
+        axis.line = element_blank(),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12, vjust = -0.5),
+        axis.title.y = element_text(size = 12, vjust = -0.5),
+        plot.margin = margin(5, 5, 5, 5, "pt")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(text = element_text(face = "bold"))
+
+plot
+
+ggsave(file="cor_upper_lower_brady_med.svg", plot=plot, width=4, height=4)
+
+
 
 
 
