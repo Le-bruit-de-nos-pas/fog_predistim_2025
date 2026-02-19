@@ -81,8 +81,8 @@ plot1 <- data_long %>% mutate(Condition=ifelse(Condition=="OFF_After", "OFF/OFF"
                                                           ifelse(Condition=="ONOFF_After", "Med-OFF/DBS-ON", "ON/ON")))) %>%
   mutate(Condition=factor(Condition, levels=c("OFF/OFF", "Med-ON/DBS-OFF","Med-OFF/DBS-ON", "ON/ON"))) %>%
   ggplot(aes(x = Condition, y = Value, fill =Condition , colour=Condition)) +
-  geom_boxplot(alpha=0.6, notch=TRUE) +
-  geom_jitter(alpha=0.5, shape=1, stroke=1) +
+  geom_boxplot(alpha=0.6, notch=TRUE, outliers = FALSE) +
+  geom_jitter(alpha=0.25, size=0.5, height=0.1, shape=1, stroke=1) +
   theme_minimal() +
  labs(x = "\n Post-OP Condition",
        y = "MDS-UPDRS 3.10 item \n") +
@@ -101,8 +101,8 @@ plot1 <- data_long %>% mutate(Condition=ifelse(Condition=="OFF_After", "OFF/OFF"
         axis.title.y = element_text(size = 12, vjust = -0.5),
         plot.margin = margin(5, 5, 5, 5, "pt")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_manual(values=c("#6b7280", "#896f7c", "#105067", "#bb3b2c")) +
-  scale_fill_manual(values=c("#6b7280", "#896f7c", "#105067", "#bb3b2c")) + 
+  scale_color_manual(values=c("#193a71", "#484c7a", "#725a84", "#986981")) +
+  scale_fill_manual(values=c("#193a71", "#484c7a", "#725a84", "#986981")) + 
   theme(text = element_text(face = "bold"))
 
 plot1
@@ -218,8 +218,8 @@ before_after_off_on <- Item3.10_before_vs_after  %>%
 plot1 <-  before_after_off_on %>% mutate(Condition=paste0(Time, paste0(" [", paste0(State, "]")))) %>%
  mutate(Condition=factor(Condition, levels=c("V0 [OFF]","V0 [ON]", "V1 [OFF]", "V1 [ON]"))) %>%
   ggplot(aes(x = Condition, y = Value, fill = Condition, colour=Condition)) +
-  geom_boxplot(alpha=0.6, notch=TRUE) +
-  geom_jitter(alpha=0.5, shape=1, stroke=1) +
+  geom_boxplot(alpha=0.6, outliers = FALSE, notch=TRUE) +
+  geom_jitter(alpha=0.25, size=0.5, height=0.1, shape=1, stroke=1) +
   theme_minimal() +
   labs(x = "\n Pre-OP|Post-OP OFF|ON Condition",
        y = "MDS-UPDRS 3.10 item \n") +
@@ -238,8 +238,8 @@ plot1 <-  before_after_off_on %>% mutate(Condition=paste0(Time, paste0(" [", pas
         axis.title.y = element_text(size = 12, vjust = -0.5),
         plot.margin = margin(5, 5, 5, 5, "pt")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_manual(values=c( "#B0B0B5", "#C96A5F", "#6b7280", "#bb3b2c")) +
-  scale_fill_manual(values=c( "#B0B0B5", "#C96A5F", "#6b7280", "#bb3b2c")) + 
+  scale_color_manual(values=c( "#193a71", "#193a71", "#b5667b", "#b5667b")) +
+  scale_fill_manual(values=c( "#193a71", "#193a71", "#b5667b", "#b5667b")) + 
   theme(text = element_text(face = "bold"))
 
 plot1

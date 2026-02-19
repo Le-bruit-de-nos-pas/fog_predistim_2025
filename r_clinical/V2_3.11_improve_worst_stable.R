@@ -6,6 +6,8 @@ pats_to_track <- fread("data/Item3.10_after.txt")
 pats_to_track <- pats_to_track[,"SUBJID"]
 SUBJID <- pats_to_track %>% select(SUBJID)
 
+item3.11_pats_groups_dbs_resp <- fread("data/item3.11_pats_groups_dbs_resp.txt")
+
 
 UPDRSIII_TOTAUX <- readxl::read_xlsx(path="data/Asymmetry_DeepBrainStimulation.xlsx",sheet = "UPDRSIII_TOTAUX", skip=0, col_types = "text", trim_ws = TRUE)
 UPDRSIII_TOTAUX <- SUBJID %>% inner_join(UPDRSIII_TOTAUX)
@@ -31,19 +33,21 @@ data_long <- Tot_UPDRS_III_after %>%
 
 
 
-
+item3.11_pats_groups_dbs_resp <- item3.11_pats_groups_dbs_resp %>% 
+   mutate(group=ifelse(group=="Better", "Better [Decrease FOG]",
+                      ifelse(group=="Worst", "Worst [Increased FOG]",
+                             ifelse(group=="Stable_FOG", "Stable [With FOG]", "Stable [No FOG]")))) 
+ 
 
 plot1 <- data_long %>%
   inner_join(item3.11_pats_groups_dbs_resp %>% select(SUBJID, group)) %>%
-  mutate(group=ifelse(group=="Better", "ON DBS 3.11 Better [26%]",
-                      ifelse(group=="Stable", "ON DBS 3.11 Stable [72%]", "ON DBS 3.11 Worst [2%]"))) %>%
   mutate(Condition=ifelse(Condition=="OFF_TOTALCALC_V1", "OFF/OFF",
                                                    ifelse(Condition=="OFFON_TOTALCALC_V1", "Med-ON/DBS-OFF",
                                                           ifelse(Condition=="ONOFF_TOTALCALC_V1", "Med-OFF/DBS-ON", "ON/ON")))) %>%
   mutate(Condition=factor(Condition, levels=c("OFF/OFF", "Med-ON/DBS-OFF","Med-OFF/DBS-ON", "ON/ON"))) %>%
   ggplot(aes(x = Condition, y = Value, fill = Condition, colour=Condition)) +
-  geom_boxplot(alpha=0.6, notch=TRUE) +
-  geom_jitter(alpha=0.5, shape=1, stroke=1) +
+  geom_boxplot(alpha=0.6, outliers = FALSE, notch=FALSE) +
+  geom_jitter(alpha=0.25, size=1, height=0.5, shape=1, stroke=1) +
   theme_minimal() +
   labs(x = "\n Post-OP Condition",
        y = "MDS-UPDRS III Total Score \n") +
@@ -62,14 +66,14 @@ plot1 <- data_long %>%
         axis.title.y = element_text(size = 12, vjust = -0.5),
         plot.margin = margin(5, 5, 5, 5, "pt")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_manual(values=c("#6b7280", "#896f7c", "#105067", "#bb3b2c")) +
-  scale_fill_manual(values=c("#6b7280", "#896f7c", "#105067", "#bb3b2c")) + 
+  scale_color_manual(values=c("#193a71", "#484c7a", "#725a84", "#986981")) +
+  scale_fill_manual(values=c("#193a71", "#484c7a", "#725a84", "#986981")) + 
   theme(text = element_text(face = "bold")) +
-  facet_wrap(~group)
+  facet_wrap(~group, ncol=4)
 
 plot1
 
-ggsave(file="updrs3tot_postops.svg", plot=plot1, width=7, height=5)
+ggsave(file="updrs3tot_postops.svg", plot=plot1, width=9, height=5)
 
 
 
@@ -141,15 +145,13 @@ data_long <- Axials %>%
 
 plot1 <- data_long %>% 
    inner_join(item3.11_pats_groups_dbs_resp %>% select(SUBJID, group)) %>%
-  mutate(group=ifelse(group=="Better", "ON DBS 3.11 Better [26%]",
-                      ifelse(group=="Stable", "ON DBS 3.11 Stable [72%]", "ON DBS 3.11 Worst [2%]"))) %>%
-  mutate(Condition=ifelse(Condition=="OFF_After", "OFF/OFF",
+    mutate(Condition=ifelse(Condition=="OFF_After", "OFF/OFF",
                                                    ifelse(Condition=="OFFON_After", "Med-ON/DBS-OFF",
                                                           ifelse(Condition=="ONOFF_After", "Med-OFF/DBS-ON", "ON/ON")))) %>%
   mutate(Condition=factor(Condition, levels=c("OFF/OFF", "Med-ON/DBS-OFF","Med-OFF/DBS-ON", "ON/ON"))) %>%
   ggplot(aes(x = Condition, y = Value, fill =Condition , colour=Condition)) +
-  geom_boxplot(alpha=0.6, notch=TRUE) +
-  geom_jitter(alpha=0.5, shape=1, stroke=1) +
+  geom_boxplot(alpha=0.6, outliers = FALSE, notch=FALSE) +
+  geom_jitter(alpha=0.25, size=1, height=0.5, shape=1, stroke=1) +
   theme_minimal() +
  labs(x = "\n Post-OP Condition",
        y = "Axial sub-score \n") +
@@ -168,14 +170,14 @@ plot1 <- data_long %>%
         axis.title.y = element_text(size = 12, vjust = -0.5),
         plot.margin = margin(5, 5, 5, 5, "pt")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_manual(values=c("#6b7280", "#896f7c", "#105067", "#bb3b2c")) +
-  scale_fill_manual(values=c("#6b7280", "#896f7c", "#105067", "#bb3b2c")) + 
+   scale_color_manual(values=c("#193a71", "#484c7a", "#725a84", "#986981")) +
+  scale_fill_manual(values=c("#193a71", "#484c7a", "#725a84", "#986981")) + 
   theme(text = element_text(face = "bold")) +
-  facet_wrap(~group)
+  facet_wrap(~group, ncol=4)
 
 plot1
 
-ggsave(file="axial_postops.svg", plot=plot1, width=7, height=5)
+ggsave(file="axial_postops.svg", plot=plot1, width=9, height=5)
 
 
 
@@ -365,15 +367,14 @@ pairwise.wilcox.test(data_long$Value, data_long$Condition,
 
 plot1 <- data_long %>% 
     inner_join(item3.11_pats_groups_dbs_resp %>% select(SUBJID, group)) %>%
-  mutate(group=ifelse(group=="Better", "ON DBS 3.11 Better [26%]",
-                      ifelse(group=="Stable", "ON DBS 3.11 Stable [72%]", "ON DBS 3.11 Worst [2%]"))) %>%
+  
   mutate(Condition=ifelse(Condition=="OFF_After_Brady", "OFF/OFF",
                                                    ifelse(Condition=="OFFON_After_Brady", "Med-ON/DBS-OFF",
                                                           ifelse(Condition=="ONOFF_After_Brady", "Med-OFF/DBS-ON", "ON/ON")))) %>%
   mutate(Condition=factor(Condition, levels=c("OFF/OFF", "Med-ON/DBS-OFF","Med-OFF/DBS-ON", "ON/ON"))) %>%
   ggplot(aes(x = Condition, y = Value, fill =Condition , colour=Condition)) +
-  geom_boxplot(alpha=0.6, notch=TRUE) +
-  geom_jitter(alpha=0.5, shape=1, stroke=1) +
+ geom_boxplot(alpha=0.6, outliers = FALSE, notch=FALSE) +
+  geom_jitter(alpha=0.25, size=1, height=0.5, shape=1, stroke=1) +
   theme_minimal() +
  labs(x = "\n Post-OP Condition",
        y = "Bradykinesia sub-score \n") +
@@ -392,11 +393,11 @@ plot1 <- data_long %>%
         axis.title.y = element_text(size = 12, vjust = -0.5),
         plot.margin = margin(5, 5, 5, 5, "pt")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_manual(values=c("#6b7280", "#896f7c", "#105067", "#bb3b2c")) +
-  scale_fill_manual(values=c("#6b7280", "#896f7c", "#105067", "#bb3b2c")) + 
+    scale_color_manual(values=c("#193a71", "#484c7a", "#725a84", "#986981")) +
+  scale_fill_manual(values=c("#193a71", "#484c7a", "#725a84", "#986981")) + 
   theme(text = element_text(face = "bold")) +
-  facet_wrap(~group)
+  facet_wrap(~group, ncol=4)
 
 plot1
 
-ggsave(file="brady_postops.svg", plot=plot1, width=7, height=5)
+ggsave(file="brady_postops.svg", plot=plot1, width=9, height=5)

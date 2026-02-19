@@ -89,8 +89,8 @@ plot1 <- data_long %>% mutate(Condition=ifelse(Condition=="OFF_After", "OFF/OFF"
                                                           ifelse(Condition=="ONOFF_After", "Med-OFF/DBS-ON", "ON/ON")))) %>%
   mutate(Condition=factor(Condition, levels=c("OFF/OFF", "Med-ON/DBS-OFF","Med-OFF/DBS-ON", "ON/ON"))) %>%
   ggplot(aes(x = Condition, y = Value, fill =Condition , colour=Condition)) +
-  geom_boxplot(alpha=0.6, notch=TRUE) +
-  geom_jitter(alpha=0.5, shape=1, stroke=1) +
+  geom_boxplot(alpha=0.6, notch=TRUE, outliers = FALSE) +
+  geom_jitter(alpha=0.25, size=0.5, shape=1, stroke=1) +
   theme_minimal() +
  labs(x = "\n Post-OP Condition",
        y = "Axial sub-score \n") +
@@ -109,8 +109,8 @@ plot1 <- data_long %>% mutate(Condition=ifelse(Condition=="OFF_After", "OFF/OFF"
         axis.title.y = element_text(size = 12, vjust = -0.5),
         plot.margin = margin(5, 5, 5, 5, "pt")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_manual(values=c("#6b7280", "#896f7c", "#105067", "#bb3b2c")) +
-  scale_fill_manual(values=c("#6b7280", "#896f7c", "#105067", "#bb3b2c")) + 
+  scale_color_manual(values=c("#193a71", "#484c7a", "#725a84", "#986981")) +
+  scale_fill_manual(values=c("#193a71", "#484c7a", "#725a84", "#986981")) + 
   theme(text = element_text(face = "bold"))
 
 plot1
@@ -156,6 +156,7 @@ pairwise.wilcox.test(deltas_df_long$Value, deltas_df_long$Condition,
 # 
 # P value adjustment method: bonferroni 
 
+range(deltas_df$`Med-OFF/DBS-ON`,na.rm=T)
 
 plot1 <- deltas_df  %>%
   pivot_longer(cols = c("Med-ON/DBS-OFF","Med-OFF/DBS-ON", "ON/ON"),
@@ -163,10 +164,10 @@ plot1 <- deltas_df  %>%
                values_to = "Value") %>%
   mutate(Condition=factor(Condition, levels=c("Med-ON/DBS-OFF","Med-OFF/DBS-ON", "ON/ON"))) %>%
   ggplot(aes(x = Condition, y = Value, fill = Condition, colour=Condition)) +
-  geom_boxplot(alpha=0.6, notch=TRUE) +
-  geom_jitter(alpha=0.5, shape=1, stroke=1) +
+  geom_boxplot(alpha=0.6, outliers = FALSE, notch=TRUE) +
+  geom_jitter(alpha=0.25, size=0.5, shape=1, stroke=1) +
   theme_minimal() + 
-  ylim(-120, 120) +
+  ylim(-150, 200) +
   geom_hline(yintercept=0, linetype="dashed") +
   labs(x = "\n Post-OP Condition",
        y = "% Drop Axial sub-score \n") +
@@ -185,8 +186,8 @@ plot1 <- deltas_df  %>%
         axis.title.y = element_text(size = 12, vjust = -0.5),
         plot.margin = margin(5, 5, 5, 5, "pt")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_manual(values=c( "#896f7c", "#105067", "#bb3b2c")) +
-  scale_fill_manual(values=c( "#896f7c", "#105067", "#bb3b2c")) + 
+  scale_color_manual(values=c( "#484c7a", "#725a84", "#986981")) +
+  scale_fill_manual(values=c( "#484c7a", "#725a84", "#986981")) + 
   theme(text = element_text(face = "bold"))
 
 plot1
@@ -296,8 +297,8 @@ before_after_off_on <- Axials  %>%
 plot1 <-  before_after_off_on %>% mutate(Condition=paste0(Time, paste0(" [", paste0(State, "]")))) %>%
  mutate(Condition=factor(Condition, levels=c("V0 [OFF]","V0 [ON]", "V1 [OFF]", "V1 [ON]"))) %>%
   ggplot(aes(x = Condition, y = Value, fill = Condition, colour=Condition)) +
-  geom_boxplot(alpha=0.6, notch=TRUE) +
-  geom_jitter(alpha=0.5, shape=1, stroke=1) +
+  geom_boxplot(alpha=0.6, notch=TRUE, outliers = FALSE) +
+  geom_jitter(alpha=0.25, size=0.5, shape=1, stroke=1) +
   theme_minimal() +
   labs(x = "\n Pre-OP|Post-OP OFF|ON Condition",
        y = "Axial sub-score \n") +
@@ -316,8 +317,8 @@ plot1 <-  before_after_off_on %>% mutate(Condition=paste0(Time, paste0(" [", pas
         axis.title.y = element_text(size = 12, vjust = -0.5),
         plot.margin = margin(5, 5, 5, 5, "pt")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_manual(values=c( "#B0B0B5", "#C96A5F", "#6b7280", "#bb3b2c")) +
-  scale_fill_manual(values=c( "#B0B0B5", "#C96A5F", "#6b7280", "#bb3b2c")) + 
+  scale_color_manual(values=c( "#193a71", "#193a71", "#b5667b", "#b5667b")) +
+  scale_fill_manual(values=c( "#193a71", "#193a71", "#b5667b", "#b5667b")) + 
   theme(text = element_text(face = "bold"))
 
 plot1
@@ -416,8 +417,8 @@ plot1 <- deltas_df  %>%
                values_to = "Value") %>%
   mutate(Condition=factor(Condition, levels=c("Drop V0", "Drop V1"))) %>%
   ggplot(aes(x = Condition, y = Value, fill = Condition, colour=Condition)) +
-  geom_boxplot(alpha=0.6, notch=TRUE) +
-  geom_jitter(alpha=0.5, size=1, shape=1, stroke=1) +
+  geom_boxplot(alpha=0.6, notch=TRUE, outliers = FALSE) +
+  geom_jitter(alpha=0.25, size=0.5, size=1, shape=1, stroke=1) +
   theme_minimal() + 
   #ylim(-120, 50) +
   geom_hline(yintercept=0, linetype="dashed") +
@@ -438,8 +439,8 @@ plot1 <- deltas_df  %>%
         axis.title.y = element_text(size = 12, vjust = -0.5),
         plot.margin = margin(5, 5, 5, 5, "pt")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_manual(values=c(  "#C96A5F", "#bb3b2c")) +
-  scale_fill_manual(values=c( "#C96A5F", "#bb3b2c")) + 
+  scale_color_manual(values=c(  "#193a71", "#b5667b")) +
+  scale_fill_manual(values=c(  "#193a71", "#b5667b")) + 
   theme(text = element_text(face = "bold"))
 
 plot1
@@ -460,8 +461,8 @@ cor.test(deltas_df$`Drop V0`, deltas_df$`Drop V1`, method="spearman")
 
 plot1 <- deltas_df  %>% 
   ggplot(aes(x = `Drop V0`, y = `Drop V1`)) +
-  geom_smooth(method="lm", colour= "#105067", fill="#105067" ) +
-  geom_jitter(alpha=0.5, size=0.5, width=2.2, height=2, shape=1, colour= "#105067", stroke=1) +
+  geom_smooth(method="lm", colour= "#193a71", fill="#193a71" ) +
+  geom_jitter(alpha=0.25, size=0.5, width=2.2, height=2, shape=1, colour= "#193a71", stroke=1) +
   theme_minimal() + 
   ylim(-110, -30) + xlim(-110, -30) +
   labs(x = "\n Pre-OP % Delta",
