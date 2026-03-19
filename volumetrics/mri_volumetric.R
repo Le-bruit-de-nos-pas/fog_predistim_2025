@@ -632,3 +632,42 @@ summary_dt <- shap_long[, .(
 ), by = variable][order(-mean_abs_shap)]
 
 top_shap <- summary_dt[1:50]
+
+
+library(ggplot2)
+library(forcats)
+
+top_shap[, variable := fct_reorder(variable, mean_abs_shap)]
+
+
+fwrite(top_shap, "top_shap_3.11.csv")
+
+plot <- ggplot(top_shap, aes(x = mean_abs_shap, y = variable)) +
+  geom_col(fill = "#193a71", width = 0.7)  +
+  geom_vline(xintercept = 0, color = "grey50", linewidth = 0.6) +
+  labs(
+    title = "FOG 3.11 SHAP Feature Importance (Top 50)",
+    x = "Mean absolute SHAP value",
+    y = NULL
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_blank(),
+        axis.line = element_blank(),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 10, hjust = 1),
+        axis.title.x = element_text(size = 12, vjust = -0.5),
+        axis.title.y = element_text(size = 12, vjust = -0.5),
+        plot.margin = margin(5, 5, 5, 5, "pt")) 
+
+plot 
+
+ggsave(file="xgboost.svg", plot=plot, width=9, height=8)
+
+
