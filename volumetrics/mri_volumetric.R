@@ -283,3 +283,28 @@ plot <- ggplot(top_features_fog, aes(x = feature, y = spearman_r, fill = spearma
 plot
 
 ggsave(file="fog3.11_corrs.svg", plot=plot, width=10, height=7)
+
+
+
+
+
+
+
+
+names(FOG_df)
+
+FOG_df <- FOG_df %>%
+  mutate(OFF_2.13 = ifelse(is.na(OFF_2.13), NA, ifelse(OFF_2.13==0,0,1))) %>%
+    mutate(OFF_3.11 = ifelse(is.na(OFF_2.13), NA, ifelse(OFF_3.11==0,0,1))) 
+
+
+
+# LASSO 2.13
+
+library(glmnet)
+library(pROC)
+library(dplyr)
+library(caret)
+library(ggplot2)
+library(ggrepel)
+
