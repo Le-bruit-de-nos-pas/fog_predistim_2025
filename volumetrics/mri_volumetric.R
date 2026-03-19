@@ -213,3 +213,29 @@ ggsave(file="fog2.13_corrs.svg", plot=plot, width=10, height=7)
 
 
 
+
+
+corr_results <- map_dfr(mri_cols, function(col) {
+  
+  test <- cor.test(
+    FOG_df[[col]],
+    FOG_df$OFF_3.11,
+    method = "spearman",
+    use = "complete.obs"
+  )
+  
+  tibble(
+    feature = col,
+    spearman_r = test$estimate,
+    p_value = test$p.value
+  )
+})
+
+
+corr_results <- corr_results %>%
+  mutate(p_adj = p.adjust(p_value, method = "fdr")) %>%
+  arrange(desc(abs(spearman_r)))
+
+
+spearman_corr_fog_3.11 <- corr_results
+
