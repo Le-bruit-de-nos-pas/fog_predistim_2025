@@ -17,3 +17,10 @@ DEMOGRAPHIE <- DEMOGRAPHIE[-1,]
 DEMOGRAPHIE$AGE <- as.numeric(DEMOGRAPHIE$AGE)
 
 FOG_df <- FOG_df %>% full_join(DEMOGRAPHIE)
+
+# MRI Volumesn, % Normalized Volumes, and Asymmetries (%)
+
+global_volumetry_info_2026_03_05_13_27 <- fread("data/global_volumetry_info_2026_03_05_13_27.csv")
+
+
+# identify duplicates, for reference
