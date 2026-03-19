@@ -88,3 +88,22 @@ global_volumetry_mean <- global_volumetry_info_2026_03_05_13_27 %>%
 
 
 
+
+
+# original df volumetric
+
+global_volumetry_info_2026_03_05_13_27 <- global_volumetry_info_2026_03_05_13_27 %>%
+  mutate(
+    SUBJID  = str_replace(SUBJID , "^sub(\\d{2})(\\d{3}).*", "\\1-\\2")
+  )
+
+
+FOG_df <- global_volumetry_info_2026_03_05_13_27 %>% 
+  inner_join(FOG_df )
+
+names(FOG_df)
+
+range(FOG_df$OFF_2.13, na.rm=TRUE)
+range(FOG_df$ON_2.13, na.rm=TRUE)
+range(FOG_df$OFF_3.11, na.rm=TRUE)
+range(FOG_df$ON_3.11, na.rm=TRUE)
