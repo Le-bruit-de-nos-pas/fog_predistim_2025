@@ -496,3 +496,74 @@ library(ggplot2)
 library(ggrepel)
 
 FOG_clean <- FOG_df %>%
+  filter(!is.na(OFF_3.11))
+
+# MRI features only (NO AGE)
+X <- FOG_clean %>%
+  select(`White Matter (WM) volume cm3`:`Lobules VIII-X volume %`) %>%
+  select(where(~ sd(.x, na.rm = TRUE) > 0)) %>%
+  as.matrix()
+
+# Standardize predictors
+X <- scale(X)
+
+y <- FOG_clean$OFF_3.11
+
+# Balanced folds
+set.seed(42)
+folds <- createFolds(y, k = 10, list = FALSE)
+
+auc_fold <- numeric(10)
+f1_fold  <- numeric(10)
+
+selected_features <- vector("list", 10)
+coef_list <- vector("list", 10)
+
+for (k in 1:10) {
+
+  train_idx <- which(folds != k)
+  test_idx  <- which(folds == k)
+
+  X_train <- X[train_idx, ]
+  y_train <- y[train_idx]
+
+  X_test <- X[test_idx, ]
+  y_test <- y[test_idx]
+
+  cv_model <- cv.glmnet(
+    X_train,
+    y_train,
+    family = "binomial",
+    alpha = 1,
+    nfolds = 5
+  )
+
+  coef_model <- coef(cv_model, s = "lambda.min")
+
+  # remove intercept
+  coef_vec <- as.vector(coef_model)[-1]
+  names(coef_vec) <- rownames(coef_model)[-1]
+
+  coef_list[[k]] <- coef_vec
+  selected_features[[k]] <- names(coef_vec[coef_vec != 0])
+
+  pred_prob <- predict(
+    cv_model,
+    newx = X_test,
+    s = "lambda.min",
+    type = "response"
+  )
+
+  roc_obj <- roc(y_test, as.numeric(pred_prob), quiet = TRUE)
+  auc_fold[k] <- auc(roc_obj)
+
+  pred_class <- ifelse(pred_prob > 0.5, 1, 0)
+
+  conf_mat <- confusionMatrix(
+    factor(pred_class, levels = c(0,1)),
+    factor(y_test, levels = c(0,1)),
+    positive = "1"
+  )
+
+  f1_fold[k] <- conf_mat$byClass["F1"]
+}
