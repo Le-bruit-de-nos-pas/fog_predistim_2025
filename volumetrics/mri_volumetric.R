@@ -68,3 +68,23 @@ qc_variability <- qc_variability %>%
   rowwise() %>%
   mutate(mean_CV = mean(c_across(ends_with("_CV")), na.rm = TRUE)) %>%
   ungroup()
+
+
+qc_variability %>% select(SUBJID , mean_CV) %>% drop_na()  %>%
+  ggplot(aes(mean_CV)) +
+  geom_density()
+  
+qc_variability %>% select(SUBJID , mean_CV) %>% drop_na() %>% arrange(mean_CV)
+
+
+# If using mean per patient, NOT RECOMMENDED
+
+global_volumetry_mean <- global_volumetry_info_2026_03_05_13_27 %>%
+  group_by(SUBJID ) %>%
+  summarise(
+    across(9:544, ~ mean(.x, na.rm = TRUE)),
+    .groups = "drop"
+  )
+
+
+
