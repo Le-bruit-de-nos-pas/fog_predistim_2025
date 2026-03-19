@@ -567,3 +567,26 @@ for (k in 1:10) {
 
   f1_fold[k] <- conf_mat$byClass["F1"]
 }
+
+# Model performance
+mean_auc <- mean(auc_fold)
+sd_auc   <- sd(auc_fold)
+
+mean_f1  <- mean(f1_fold)
+sd_f1    <- sd(f1_fold)
+
+
+feature_counts <- table(unlist(selected_features)) %>%
+  sort(decreasing = TRUE)
+
+top_features <- as.data.frame(feature_counts) %>%
+  rename(feature = Var1, n_folds = Freq)
+
+top_features_3.11 <- top_features 
+
+
+
+
+
+
+library(xgboost)
