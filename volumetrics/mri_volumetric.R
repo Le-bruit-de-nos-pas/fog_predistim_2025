@@ -45,3 +45,26 @@ global_volumetry_info_2026_03_05_13_27 <-
 length(unique(global_volumetry_info_2026_03_05_13_27$SUBJID )) / dim(global_volumetry_info_2026_03_05_13_27)[1]
 
 # 74%
+
+
+
+# Variability per patient, NOT a good metric given the asymmetries
+
+
+vol_cols <- names(global_volumetry_info_2026_03_05_13_27)[9:544]
+
+
+qc_variability <- global_volumetry_info_2026_03_05_13_27 %>%
+  group_by(SUBJID ) %>%
+  summarise(
+    across(all_of(vol_cols),
+           ~ 100 * sd(.x, na.rm = TRUE) / mean(.x, na.rm = TRUE),
+           .names = "{.col}_CV"),
+    .groups = "drop"
+  )
+
+
+qc_variability <- qc_variability %>%
+  rowwise() %>%
+  mutate(mean_CV = mean(c_across(ends_with("_CV")), na.rm = TRUE)) %>%
+  ungroup()
