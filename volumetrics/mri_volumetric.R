@@ -107,3 +107,26 @@ range(FOG_df$OFF_2.13, na.rm=TRUE)
 range(FOG_df$ON_2.13, na.rm=TRUE)
 range(FOG_df$OFF_3.11, na.rm=TRUE)
 range(FOG_df$ON_3.11, na.rm=TRUE)
+
+
+# FOG_df <- FOG_df %>%
+#   mutate(OFF_2.13 = ifelse(is.na(OFF_2.13), NA, ifelse(OFF_2.13==0,0,1))) %>%
+#     mutate(ON_2.13 = ifelse(is.na(OFF_2.13), NA, ifelse(ON_2.13==0,0,1))) %>%
+#     mutate(OFF_3.11 = ifelse(is.na(OFF_2.13), NA, ifelse(OFF_3.11==0,0,1))) %>%
+#     mutate(ON_3.11 = ifelse(is.na(OFF_2.13), NA, ifelse(ON_3.11==0,0,1))) 
+
+sum(is.na(FOG_df$OFF_2.13))
+sum(is.na(FOG_df$ON_2.13))
+sum(is.na(FOG_df$OFF_3.11))
+sum(is.na(FOG_df$ON_3.11))
+  
+dim(FOG_df)[1]
+
+table(FOG_df$OFF_2.13)
+table(FOG_df$ON_2.13)
+table(FOG_df$OFF_3.11)
+table(FOG_df$ON_3.11)
+
+
+FOG_df <- FOG_df %>% select(-ON_2.13, -ON_3.11)
+
