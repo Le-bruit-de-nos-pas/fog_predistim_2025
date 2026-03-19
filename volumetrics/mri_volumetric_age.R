@@ -167,3 +167,29 @@ plot <-  ggplot(AGE_df, aes(AGE, `Brain (WM+GM) volume %`)) +
 plot1
 
 ggsave(file="age_brain_vol_jitter.svg", plot=plot, width=5, height=5)
+
+plot <-  ggplot(AGE_df, aes(AGE, `Cerebro Spinal Fluid (CSF) volume %`)) +
+  geom_jitter(alpha = 0.3, colour="#b5667b", shape=1, stroke=2) +
+  geom_smooth(method="lm", colour="#b5667b", fill="#b5667b") +
+  theme_minimal() +
+  labs(x = "\n Biological Age (years)",
+       y = "Cerebro Spinal Fluid (CSF) volume % \n") +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_blank(),
+        axis.line = element_blank(),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12, vjust = -0.5),
+        axis.title.y = element_text(size = 12, vjust = -0.5),
+        plot.margin = margin(5, 5, 5, 5, "pt")) 
+
+plot
+
+ggsave(file="age_csf_vol_jitter.svg", plot=plot, width=5, height=5)
+
