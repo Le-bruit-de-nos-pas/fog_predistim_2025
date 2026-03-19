@@ -113,3 +113,25 @@ mri_cols <- names(AGE_df)[9:544]
 
 library(dplyr)
 library(purrr)
+
+corr_results <- map_dfr(mri_cols, function(col) {
+  
+  test <- cor.test(
+    AGE_df[[col]],
+    AGE_df$AGE,
+    method = "spearman",
+    use = "complete.obs"
+  )
+  
+  tibble(
+    feature = col,
+    spearman_r = test$estimate,
+    p_value = test$p.value
+  )
+})
+
+
+corr_results <- corr_results %>%
+  mutate(p_adj = p.adjust(p_value, method = "fdr")) %>%
+  arrange(desc(abs(spearman_r)))
+
