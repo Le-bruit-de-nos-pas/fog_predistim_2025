@@ -32,3 +32,26 @@ global_volumetry_info_2026_03_05_13_27 <-
   ) %>%  filter(`Quality control` == "A")
 
 
+
+
+# Quite a few replicates
+
+length(unique(global_volumetry_info_2026_03_05_13_27$SUBJID )) / dim(global_volumetry_info_2026_03_05_13_27)[1]
+
+# 74%
+
+
+
+# Variability per patient, NOT a good metric given the asymmetries
+
+
+vol_cols <- names(global_volumetry_info_2026_03_05_13_27)[9:544]
+
+qc_variability <- global_volumetry_info_2026_03_05_13_27 %>%
+  group_by(SUBJID ) %>%
+  summarise(
+    across(all_of(vol_cols),
+           ~ 100 * sd(.x, na.rm = TRUE) / mean(.x, na.rm = TRUE),
+           .names = "{.col}_CV"),
+    .groups = "drop"
+  )
