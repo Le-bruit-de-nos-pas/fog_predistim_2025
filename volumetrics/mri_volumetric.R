@@ -130,3 +130,27 @@ table(FOG_df$ON_3.11)
 
 FOG_df <- FOG_df %>% select(-ON_2.13, -ON_3.11)
 
+
+# Individual Spearman correlations, 2 FOG flags, All MRIs
+
+mri_cols <- names(FOG_df)[9:544]   
+
+
+library(dplyr)
+library(purrr)
+
+corr_results <- map_dfr(mri_cols, function(col) {
+  
+  test <- cor.test(
+    FOG_df[[col]],
+    FOG_df$OFF_2.13,
+    method = "spearman",
+    use = "complete.obs"
+  )
+  
+  tibble(
+    feature = col,
+    spearman_r = test$estimate,
+    p_value = test$p.value
+  )
+})
