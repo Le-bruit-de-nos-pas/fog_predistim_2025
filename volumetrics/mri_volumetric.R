@@ -590,3 +590,45 @@ top_features_3.11 <- top_features
 
 
 library(xgboost)
+
+# Convert to DMatrix
+dtrain <- xgb.DMatrix(data = X, label = y)
+
+# Train model
+set.seed(42)
+final_model <- xgboost(
+  data = dtrain,
+  objective = "binary:logistic",
+  eval_metric = "auc",
+  nrounds = 200,
+  max_depth = 3,
+  eta = 0.05,
+  subsample = 0.8,
+  colsample_bytree = 0.8,
+  verbose = 0
+)
+
+
+shap_contrib <- predict(final_model, dtrain, predcontrib = TRUE)
+
+# Remove bias term
+shap_contrib <- shap_contrib[, -ncol(shap_contrib)]
+
+library(data.table)
+
+shap_dt <- as.data.table(shap_contrib)
+setnames(shap_dt, colnames(X))
+
+shap_long <- melt(
+  shap_dt[, ID := .I],
+  id.vars = "ID",
+  variable.name = "variable",
+  value.name = "shap_value"
+)
+
+# Summary
+summary_dt <- shap_long[, .(
+  mean_abs_shap = mean(abs(shap_value))
+), by = variable][order(-mean_abs_shap)]
+
+top_shap <- summary_dt[1:50]
