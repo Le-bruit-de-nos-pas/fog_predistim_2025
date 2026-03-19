@@ -671,3 +671,54 @@ plot
 ggsave(file="xgboost.svg", plot=plot, width=9, height=8)
 
 
+
+
+top_features <- top_features_3.11 %>% rename("3.11_n_folds"="n_folds") %>%
+  full_join(top_features_2.13 %>% rename("2.13_n_folds"="n_folds"))
+
+top_features[is.na(top_features)] <- 0
+
+
+
+plot <- ggplot(top_features,
+       aes(x = `2.13_n_folds`, y = `3.11_n_folds` )) +
+  geom_jitter(size = 3, width=0.2, height=0.2, colour = "#193a71", alpha = 0.5) +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = "dashed",
+    colour = "grey40"
+  ) +
+  geom_text_repel(
+    aes(label = feature),
+    size = 3,
+    max.overlaps = 25
+  ) +
+  labs(
+    x = "\n Feature selection frequency (FOG OFF 2.13)",
+    y = "Feature selection frequency (FOG OFF 3.11) \n"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_blank(),
+        axis.line = element_blank(),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10),
+        axis.title.x = element_text(size = 10, vjust = -0.5),
+        axis.title.y = element_text(size = 10, vjust = -0.5),
+        plot.margin = margin(5, 5, 5, 5, "pt")) 
+
+plot
+
+ggsave(file="number_folds.svg", plot=plot, width=7, height=7)
+
+
+
+
+
