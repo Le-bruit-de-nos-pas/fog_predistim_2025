@@ -239,3 +239,47 @@ corr_results <- corr_results %>%
 
 spearman_corr_fog_3.11 <- corr_results
 
+
+n_top <- 20
+
+top_pos <- spearman_corr_fog_3.11 %>%
+  arrange(desc(spearman_r)) %>%
+  slice(1:n_top)
+
+top_neg <- spearman_corr_fog_3.11 %>%
+  arrange(spearman_r) %>%
+  slice(1:n_top)
+
+top_features_fog <- bind_rows(top_pos, top_neg) %>%
+  mutate(feature = fct_reorder(feature, spearman_r))  # order by correlation
+
+plot <- ggplot(top_features_fog, aes(x = feature, y = spearman_r, fill = spearman_r > 0)) +
+  geom_col(width = 0.7) +
+  coord_flip() +
+  scale_fill_manual(values = c("TRUE" = "#b5667b", "FALSE" = "#193a71"), 
+                    labels = c("Negative correlation", "Positive correlation")) +
+  labs(
+    x = NULL,
+    y = "\n Spearman correlation with FOG 3.11",
+    fill = "Direction"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_blank(),
+        axis.line = element_blank(),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 10, hjust= 1),
+        axis.title.x = element_text(size = 12, vjust = -0.5),
+        axis.title.y = element_text(size = 12, vjust = -0.5),
+        plot.margin = margin(5, 5, 5, 5, "pt")) 
+
+
+plot
+
+ggsave(file="fog3.11_corrs.svg", plot=plot, width=10, height=7)
