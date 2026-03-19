@@ -154,3 +154,23 @@ corr_results <- map_dfr(mri_cols, function(col) {
     p_value = test$p.value
   )
 })
+
+
+corr_results <- corr_results %>%
+  mutate(p_adj = p.adjust(p_value, method = "fdr")) %>%
+  arrange(desc(abs(spearman_r)))
+
+
+spearman_corr_fog_2.13 <- corr_results
+
+
+
+n_top <- 20
+
+top_pos <- spearman_corr_fog_2.13 %>%
+  arrange(desc(spearman_r)) %>%
+  slice(1:n_top)
+
+top_neg <- spearman_corr_fog_2.13 %>%
+  arrange(spearman_r) %>%
+  slice(1:n_top)
