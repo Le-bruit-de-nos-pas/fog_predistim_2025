@@ -80,3 +80,23 @@ global_volumetry_mean <- global_volumetry_info_2026_03_05_13_27 %>%
   )
 
 
+
+
+
+# original df volumetric
+
+global_volumetry_info_2026_03_05_13_27 <- global_volumetry_info_2026_03_05_13_27 %>%
+  mutate(
+    SUBJID  = str_replace(SUBJID , "^sub(\\d{2})(\\d{3}).*", "\\1-\\2")
+  )
+
+global_volumetry_info_2026_03_05_13_27$SUBJID
+
+AGE_df <- global_volumetry_info_2026_03_05_13_27 %>% 
+  inner_join(DEMOGRAPHIE )
+
+names(AGE_df)
+
+range(AGE_df$AGE, na.rm=TRUE)
+
+
