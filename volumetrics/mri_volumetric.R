@@ -418,3 +418,81 @@ final_model <- xgboost(
   colsample_bytree = 0.8,
   verbose = 0
 )
+
+
+shap_contrib <- predict(final_model, dtrain, predcontrib = TRUE)
+
+# Remove bias term
+shap_contrib <- shap_contrib[, -ncol(shap_contrib)]
+
+library(data.table)
+
+shap_dt <- as.data.table(shap_contrib)
+setnames(shap_dt, colnames(X))
+
+shap_long <- melt(
+  shap_dt[, ID := .I],
+  id.vars = "ID",
+  variable.name = "variable",
+  value.name = "shap_value"
+)
+
+# Summary
+summary_dt <- shap_long[, .(
+  mean_abs_shap = mean(abs(shap_value))
+), by = variable][order(-mean_abs_shap)]
+
+top_shap <- summary_dt[1:50]
+
+
+library(ggplot2)
+library(forcats)
+
+top_shap[, variable := fct_reorder(variable, mean_abs_shap)]
+
+fwrite(top_shap, "top_shap_2.13.csv")
+
+
+plot <- ggplot(top_shap, aes(x = mean_abs_shap, y = variable)) +
+  geom_col(fill = "#b5667b", width = 0.7)  +
+  geom_vline(xintercept = 0, color = "grey50", linewidth = 0.6) +
+  labs(
+    title = "FOG 2.13 SHAP Feature Importance (Top 50)",
+    x = "Mean absolute SHAP value",
+    y = NULL
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_blank(),
+        axis.line = element_blank(),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 10, hjust = 1),
+        axis.title.x = element_text(size = 12, vjust = -0.5),
+        axis.title.y = element_text(size = 12, vjust = -0.5),
+        plot.margin = margin(5, 5, 5, 5, "pt")) 
+
+plot 
+
+ggsave(file="xgboost.svg", plot=plot, width=9, height=8)
+
+
+
+
+# LASSO 3.11
+
+
+
+library(glmnet)
+library(pROC)
+library(dplyr)
+library(caret)
+library(ggplot2)
+library(ggrepel)
+
+FOG_clean <- FOG_df %>%
