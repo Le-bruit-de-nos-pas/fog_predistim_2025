@@ -135,3 +135,35 @@ corr_results <- corr_results %>%
   mutate(p_adj = p.adjust(p_value, method = "fdr")) %>%
   arrange(desc(abs(spearman_r)))
 
+
+spearman_corr_age <- corr_results
+
+View(spearman_corr_age)
+
+spearman_corr_age %>% arrange(spearman_r) %>% head(20)
+spearman_corr_age %>% arrange(spearman_r) %>% tail(20)
+
+plot <-  ggplot(AGE_df, aes(AGE, `Brain (WM+GM) volume %`)) +
+  geom_jitter(alpha = 0.3, colour="#193a71", shape=1, stroke=2) +
+  geom_smooth(method="lm", colour="#193a71", fill="#193a71") +
+  theme_minimal() +
+  labs(x = "\n Biological Age (years)",
+       y = "Brain (WM+GM) volume % \n") +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_blank(),
+        axis.line = element_blank(),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12, vjust = -0.5),
+        axis.title.y = element_text(size = 12, vjust = -0.5),
+        plot.margin = margin(5, 5, 5, 5, "pt")) 
+
+plot1
+
+ggsave(file="age_brain_vol_jitter.svg", plot=plot, width=5, height=5)
