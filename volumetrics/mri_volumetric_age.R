@@ -55,3 +55,17 @@ qc_variability <- global_volumetry_info_2026_03_05_13_27 %>%
            .names = "{.col}_CV"),
     .groups = "drop"
   )
+
+
+qc_variability <- qc_variability %>%
+  rowwise() %>%
+  mutate(mean_CV = mean(c_across(ends_with("_CV")), na.rm = TRUE)) %>%
+  ungroup()
+
+
+qc_variability %>% select(SUBJID , mean_CV) %>% drop_na()  %>%
+  ggplot(aes(mean_CV)) +
+  geom_density()
+  
+qc_variability %>% select(SUBJID , mean_CV) %>% drop_na() %>% arrange(mean_CV)
+
