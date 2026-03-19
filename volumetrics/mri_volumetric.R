@@ -38,3 +38,10 @@ global_volumetry_info_2026_03_05_13_27 <-
   ) %>%  filter(`Quality control` == "A")
 
 
+
+
+# Quite a few replicates
+
+length(unique(global_volumetry_info_2026_03_05_13_27$SUBJID )) / dim(global_volumetry_info_2026_03_05_13_27)[1]
+
+# 74%
