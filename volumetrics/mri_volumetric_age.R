@@ -100,3 +100,16 @@ names(AGE_df)
 range(AGE_df$AGE, na.rm=TRUE)
 
 
+
+sum(is.na(AGE_df$AGE))
+
+dim(AGE_df)[1]
+
+
+# Individual Spearman correlations,
+
+mri_cols <- names(AGE_df)[9:544]   
+
+
+library(dplyr)
+library(purrr)
